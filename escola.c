@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_PESSOAS 100;
+#define MAX_PESSOAS 100
 
 // Enum para definir status
 typedef enum{
@@ -132,6 +132,5 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
 }
 
 void listarAlunos(){
-    // Implementar a Lógica para listar alunos
-    if()
+    
 }
