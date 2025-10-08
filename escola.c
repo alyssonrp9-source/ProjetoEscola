@@ -29,11 +29,13 @@ void menu();
 
 int main(){
     
-    Pessoa aluno[MAX_PESSOAS];
-    Pessoa professor[MAX_PESSOAS];
-    int qtdAlunos = 0;
-    int qtdProfessores = 0;
+    // Pessoa aluno[MAX_PESSOAS];
+    // Pessoa professor[MAX_PESSOAS];
+    // int qtdAlunos = 0;
+    // int qtdProfessores = 0;
 
+    Pessoa pessoa[MAX_PESSOAS];
+    int qtdPessoas[MAX_PESSOAS];
 
     int opcao;
     int sair = 0;
@@ -48,6 +50,7 @@ int main(){
                 
                 break;
             }
+            //Módulo Aluno
             case 1:{
                 // Aqui voce pode adicionar a logica para listar Alunos
                 if(opcao == 1){
@@ -57,16 +60,25 @@ int main(){
                     scanf("%d" , &opcao);
                     
                     switch(opcao){
+                        
+                        // Cadastrar Aluno
                         case 1:{
-                            Pessoa aluno;
-                            cadastrarPessoa(&aluno, ALUNO);
+                            printf("---Cadastro de Aluno---");
+                            cadastrarPessoa(&pessoa[MAX_PESSOAS], ALUNO);
                         }
+                        
+                        // Listar Alunos
                         case 2:{
+                            printf("---Listar Alunos---");
                             
                         }
+
+                        // Atualizar Aluno
                         case 3:{
 
                         }
+                        
+                        // Excluir Aluno
                         case 4:{       
                                           
                         }
@@ -77,21 +89,23 @@ int main(){
                 }    
 
             }
+            // Módulo Professor
             case 2:{
-                // Aqui voce pode adicionar a logica para listar Professores
-                printf("Módulo Professor:\n");
+                printf("---Cadastro de Aluno---");
+                cadastrarPessoa(&pessoa[MAX_PESSOAS], PROFESSOR);
                 
-                break;
+                
+
             }
+            // Módulo Disciplinas
             case 3:{
                 // Aqui voce pode adicionar a logica para listar Disciplinas
                 printf("Módulo Disciplinas:\n");
-             
-             
                 break;
             }    
             default:
                 printf("Opcao invalida. Tente novamente.\n");
+
         }
     }
 
@@ -100,7 +114,7 @@ int main(){
 
 void menu(){
     
-    printf("Menu:\n");
+    printf("----Menu:----\n");
     printf("0. Sair\n");
     printf("1. Aluno\n");
     printf("2. Professor\n");
@@ -108,7 +122,6 @@ void menu(){
     printf("Escolha uma opcao: ");
 
 }
-
 
 void menuProcesso(){
     printf("1-Cadastrar\n");
@@ -120,6 +133,9 @@ void menuProcesso(){
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
     printf("Digite a matricula: ");
     scanf("%d", &pessoa->matricula);
+    if(pessoa->matricula){
+        printf("")
+    }
     printf("Digite o nome: ");
     scanf("%s", pessoa->nome);
     printf("Digite a idade: ");
@@ -131,6 +147,7 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
     pessoa->status = tipo;
 }
 
-void listarAlunos(){
-    
+void listar(){
+    printf("---Lista---");
+   
 }
