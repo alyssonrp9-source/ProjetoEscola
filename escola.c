@@ -22,8 +22,8 @@ typedef struct {
 
 void menuProcesso();
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo);
-void listarAlunos();
-void listarProfessores();
+void listar(Pessoa *pessoa, int tamLista ,TipoPessoa tipo);
+void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
 void cadastrarDisciplina();
 void listarDisciplinas();
 void menu();
@@ -36,7 +36,7 @@ int main(){
     // int qtdProfessores = 0;
 
     Pessoa pessoa[MAX_PESSOAS];
-    int qtdPessoas;
+    int qtdPessoas = 0;
 
     int opcao;
     int sair = 0;
@@ -47,7 +47,7 @@ int main(){
         switch (opcao) {
             case 0:{
                 sair = 1;
-                printf("Finalizado");
+                printf("Finalizado\n");
                 
                 break;
             }
@@ -64,19 +64,25 @@ int main(){
                         
                         // Cadastrar Aluno
                         case 1:{
-                            if (qtdPessoas >= MAX_PESSOAS) {
+                            if (qtdPessoas >= MAX_PESSOAS)
+                            {
                                 printf("Tamanho máximo de pessoas cadastradas!\n");
                                 break;
                             }
-                            printf("---Cadastro de Aluno---\n");
-                            cadastrarPessoa(&pessoa[qtdPessoas], ALUNO);
-                            qtdPessoas++;
+                            else
+                            { 
+                                printf("---Cadastro de Aluno---\n");
+                                cadastrarPessoa(&pessoa[qtdPessoas], ALUNO);
+                                qtdPessoas++;
+                            }
                             break;
                         }
                         
                         // Listar Alunos
                         case 2:{
                             printf("---Listar Alunos---\n");
+                            listar(pessoa,qtdPessoas,ALUNO);
+                            
                             break;
                         }
 
@@ -102,14 +108,57 @@ int main(){
             }
             // Módulo Professor
             case 2:{
-                if (qtdPessoas >= MAX_PESSOAS) {
-                    printf("Tamanho máximo de pessoas cadastradas!\n");
+
+               if(opcao == 1){
+                    printf("Modulo Professor - Digite o número do processo:\n");
+                    int opcao;
+                    menuProcesso();
+                    scanf("%d" , &opcao);
+                    
+                    switch(opcao){
+                        
+                        // Cadastrar Aluno
+                        case 1:{
+                            if (qtdPessoas >= MAX_PESSOAS)
+                            {
+                                printf("Tamanho máximo de pessoas cadastradas!\n");
+                                break;
+                            }
+                            else
+                            { 
+                                printf("---Cadastro de Professor---\n");
+                                cadastrarPessoa(&pessoa[qtdPessoas], PROFESSOR);
+                                qtdPessoas++;
+                            }
+                            break;
+                        }
+                        
+                        // Listar Alunos
+                        case 2:{
+                            printf("---Listar Alunos---\n");
+                            listar(pessoa,qtdPessoas, PROFESSOR);
+                            
+                            break;
+                        }
+
+                        // Atualizar Aluno
+                        case 3:{
+                            printf("---Atualizar Cadastro de Alunos---\n");
+
+                            break;
+                        }
+                        
+                        // Excluir Aluno
+                        case 4:{
+                            printf("---Excluir Cadastro de Alunos---\n");
+
+                            break;        
+                        }
+
+                    }
+
                     break;
                 }
-                printf("---Cadastro de Professor---");
-                cadastrarPessoa(&pessoa[qtdPessoas], PROFESSOR);
-                qtdPessoas++;
-                
 
             }
             // Módulo Disciplinas
@@ -159,8 +208,25 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
     pessoa->status = tipo;
 }
 
+void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
+    int encontrados = 0;
+ 
+        for(int i = 0; i < tamLista; i++){
+            if(pessoa[i].status == tipo){
+                printf("Matrícula: %d - Nome: %s \n" , pessoa[i].matricula , pessoa[i].nome);
+                encontrados++;
+            }
+        }
 
-void listar(Pessoa* pessoa, int tamLista){
-    printf("---Lista---");
-
+    if(encontrados == 0)printf("Nenhum registro encontrado");
 }
+
+// void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
+    
+//     for(int i = 0; i < tamLista; i++){
+//         if(pessoa[i].status == tipo){
+            
+//         }
+//     }
+
+// }
