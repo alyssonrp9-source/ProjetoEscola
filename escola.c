@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #define MAX_PESSOAS 100
+#define MAX_DISCIPLINAS 50
 
 // Enum para definir status
 typedef enum{
@@ -9,24 +10,34 @@ typedef enum{
     PROFESSOR
 }TipoPessoa;
 
+// Struct de pessoa
 typedef struct {
-    int matricula;
+    int matricula; // ID (Matricula é unica)
     char nome[50];
     int idade;
     char sexo[50];
-    char CPF[11];
+    char CPF[11]; // Também é único (mas não vou usar para ser ID) 
     TipoPessoa status;
 }Pessoa;
 
-// TODO: Criar uma struct para disciplinas
+// Struct de disciplina
+typedef struct {
+    char nome[50];
+    int codigo; // ID
+    int semestre;
+    int professor;
+    int listaAluno[100];
+}Disciplina;
 
+// Funcoes
+void menu();
 void menuProcesso();
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo);
 void listar(Pessoa *pessoa, int tamLista ,TipoPessoa tipo);
 void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
+// Fazer Funcao Excluir
 void cadastrarDisciplina();
 void listarDisciplinas();
-void menu();
 
 int main(){
     
@@ -37,6 +48,8 @@ int main(){
 
     Pessoa pessoa[MAX_PESSOAS];
     int qtdPessoas = 0;
+    Disciplina disciplina[MAX_DISCIPLINAS];
+    int qtdDisciplinas = 0;
 
     int opcao;
     int sair = 0;
@@ -44,6 +57,7 @@ int main(){
     while (!sair) {
         menu();
         scanf("%d", &opcao);
+        int opcaoProcesso;
         switch (opcao) {
             case 0:{
                 sair = 1;
@@ -56,11 +70,10 @@ int main(){
                 // Aqui voce pode adicionar a logica para listar Alunos
                 if(opcao == 1){
                     printf("Modulo Aluno - Digite o número do processo:\n");
-                    int opcao;
-                    menuProcesso();
-                    scanf("%d" , &opcao);
+                    menuProcesso("Aluno");
+                    scanf("%d" , &opcaoProcesso);
                     
-                    switch(opcao){
+                    switch(opcaoProcesso){
                         
                         // Cadastrar Aluno
                         case 1:{
@@ -108,63 +121,71 @@ int main(){
             }
             // Módulo Professor
             case 2:{
-
-               if(opcao == 1){
-                    printf("Modulo Professor - Digite o número do processo:\n");
-                    int opcao;
-                    menuProcesso();
-                    scanf("%d" , &opcao);
+                printf("Modulo Professor - Digite o número do processo:\n");
+                menuProcesso("Professor");
+                scanf("%d" , &opcaoProcesso);
+                
+                switch(opcaoProcesso){
                     
-                    switch(opcao){
-                        
-                        // Cadastrar Aluno
-                        case 1:{
-                            if (qtdPessoas >= MAX_PESSOAS)
-                            {
-                                printf("Tamanho máximo de pessoas cadastradas!\n");
-                                break;
-                            }
-                            else
-                            { 
-                                printf("---Cadastro de Professor---\n");
-                                cadastrarPessoa(&pessoa[qtdPessoas], PROFESSOR);
-                                qtdPessoas++;
-                            }
+                    // Cadastrar Professor
+                    case 1:{
+                        if (qtdPessoas >= MAX_PESSOAS)
+                        {
+                            printf("Tamanho máximo de pessoas cadastradas!\n");
                             break;
                         }
+                        else
+                        { 
+                            printf("---Cadastro de Professor---\n");
+                            cadastrarPessoa(&pessoa[qtdPessoas], PROFESSOR);
+                            qtdPessoas++;
+                        }
+                        break;
+                    }
+                    
+                    // Listar Professor
+                    case 2:{
+                        printf("---Listar Professor---\n");
+                        listar(pessoa,qtdPessoas, PROFESSOR);
                         
-                        // Listar Alunos
-                        case 2:{
-                            printf("---Listar Alunos---\n");
-                            listar(pessoa,qtdPessoas, PROFESSOR);
-                            
-                            break;
-                        }
-
-                        // Atualizar Aluno
-                        case 3:{
-                            printf("---Atualizar Cadastro de Alunos---\n");
-
-                            break;
-                        }
-                        
-                        // Excluir Aluno
-                        case 4:{
-                            printf("---Excluir Cadastro de Alunos---\n");
-
-                            break;        
-                        }
-
+                        break;
                     }
 
-                    break;
+                    // Atualizar Professor
+                    case 3:{
+                        printf("---Atualizar Cadastro de Professor---\n");
+
+                        break;
+                    }
+                    
+                    // Excluir Professor
+                    case 4:{
+                        printf("---Excluir Cadastro de Professor---\n");
+                        break;        
+                    }
                 }
 
+                break;
             }
             // Módulo Disciplinas
             case 3:{
                 // Aqui voce pode adicionar a logica para listar Disciplinas
                 printf("Módulo Disciplinas:\n");
+                menuProcesso("Disciplinas");
+                scanf("%d", &opcaoProcesso);
+                
+                switch(opcaoProcesso) {
+                    case 1: {
+                        cadastrarDisciplina(disciplina, qtdDisciplinas);
+                        
+                        break;   
+                    }
+                    
+                    
+                }
+                
+                
+                
                 break;
             }    
             default:
@@ -186,11 +207,11 @@ void menu(){
 }
 
 
-void menuProcesso(){
-    printf("1-Cadastrar\n");
-    printf("2-Listar\n");
-    printf("3-Atualizar\n");
-    printf("4-Excluir\n");
+void menuProcesso(char* str){
+    printf("1-Cadastrar %s\n", str);
+    printf("2-Listar %s\n", str);
+    printf("3-Atualizar %s\n", str);
+    printf("4-Excluir %s\n", str);
 }
 
 
@@ -209,16 +230,13 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
 }
 
 void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
-    int encontrados = 0;
- 
-        for(int i = 0; i < tamLista; i++){
-            if(pessoa[i].status == tipo){
-                printf("Matrícula: %d - Nome: %s \n" , pessoa[i].matricula , pessoa[i].nome);
-                encontrados++;
-            }
+    for(int i = 0; i < tamLista; i++){
+        if(pessoa[i].status == tipo){
+            printf("Matrícula: %d - Nome: %s \n" , pessoa[i].matricula , pessoa[i].nome);
         }
+    }
 
-    if(encontrados == 0)printf("Nenhum registro encontrado");
+    if(tamLista == 0) printf("Nenhum registro encontrado\n");
 }
 
 // void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
@@ -230,3 +248,17 @@ void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
 //     }
 
 // }
+
+
+// Colocar funcao excluir
+
+
+void cadastrarDisciplina(Disciplina* disciplina, int tamLista) {
+    
+    
+    
+    return;
+}
+
+
+
