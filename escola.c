@@ -109,7 +109,7 @@ int main(){
             // Módulo Professor
             case 2:{
 
-               if(opcao == 1){
+               if(opcao == 2){
                     printf("Modulo Professor - Digite o número do processo:\n");
                     int opcao;
                     menuProcesso();
@@ -159,8 +159,9 @@ int main(){
 
                     break;
                 }
-
+                break;
             }
+            
             // Módulo Disciplinas
             case 3:{
                 // Aqui voce pode adicionar a logica para listar Disciplinas
