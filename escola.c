@@ -38,8 +38,8 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo);
 void listar(Pessoa *pessoa, int tamLista ,TipoPessoa tipo);
 void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
 void excluir();
-void cadastrarDisciplina();
-void listarDisciplinas();
+void cadastrarDisciplina(Disciplina*);
+void listarDisciplinas(Disciplina*, int);
 
 int main(){
     
@@ -180,13 +180,32 @@ int main(){
                 scanf("%d", &opcaoProcesso);
                 
                 switch(opcaoProcesso) {
+                    // Cadastra disciplinas
                     case 1: {
-                        cadastrarDisciplina(disciplina, qtdDisciplinas);
-                        
-                        break;   
+                        if (qtdDisciplinas >= MAX_DISCIPLINAS) {
+                            printf("Tamanho máximo de disciplinas cadastradas!");
+                            break;
+                        }
+                        cadastrarDisciplina(&disciplina[qtdDisciplinas]);
+                        break;
                     }
                     
+                    // Lista disciplinas
+                    case 2: {
+                        listarDisciplinas(disciplina, qtdDisciplinas);
+                        break;
+                    }
                     
+                    // Atualiza disciplinas
+                    case 3: {
+                        break;
+                    }
+                    
+                    // Exclui disciplinas
+                    case 4:{
+
+                        break;
+                    }
                 }
                 
                 
@@ -329,15 +348,32 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
 
 // Colocar funcao excluir
 
+void cadastrarDisciplina(Disciplina* disciplina) {
 
-
-
-void cadastrarDisciplina(Disciplina* disciplina, int tamLista) {
-    
+    printf("Digite o nome da disciplina");
+    scanf("%s", disciplina->nome);
+    printf("Digite o código da disciplina");
+    scanf("%i", &disciplina->codigo);
+    printf("Digite o semestre da disciplina");
+    scanf("%i", &disciplina->semestre);
+    printf("Digite o professor da disciplina");
+    scanf("%i", &disciplina->professor);    
     
     
     return;
 }
 
 
+void listarDisciplinas(Disciplina disciplina[], int tam){
+    if (!tam) {
+        printf("Sem disciplinas cadastradas\n");
+        return;
+    } 
+
+    for (int i = 0; i < tam; i++){
+        printf(""); // TODO
+    }
+
+    return;
+}
 
