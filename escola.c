@@ -37,7 +37,7 @@ void menuAtualizar();
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo);
 void listar(Pessoa *pessoa, int tamLista ,TipoPessoa tipo);
 void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
-void excluir();
+void excluir(Pessoa *pessoa , int tamLista, TipoPessoa tipo);
 void cadastrarDisciplina();
 void listarDisciplinas();
 
@@ -163,7 +163,8 @@ int main(){
                         // Excluir Professor
                         case 4:{
                             printf("---Excluir Cadastro de Professor---\n");
-                            break;        
+                            excluir(pessoa, qtdPessoas, PROFESSOR);
+                            break; 
                         }
 
                         
@@ -323,21 +324,46 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
     }
 }
 
-
-
-
-
 // Colocar funcao excluir
 
+void excluir(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
+    int mat_remover;
+
+    // printf("Digite a Matrícula que deseja remover: ");
+    // scanf("%d" , &mat_remover);
+    
+    // for(int i = 0; i < tamLista; i++){
+    //     if(pessoa[i] == ){ 
+    //         if(pessoa[i].status == tipo ){
+    //             for(int j = ; j < tamLista - 1; j++){
+    //                 pessoa[i] = pessoa[i + 1];
+    //             }
+    //         }
+    //     }    
+    // }
 
 
+    // for(int i = 0; i < tamLista - 1; i++){
+    //     if(pessoa[i].status == tipo && pessoa[i].matricula == mat_remover){
+    //         if(mat_remover)
+            
+            
+    //         //pessoa[i] = pessoa[i+1];
+            
+    //     }
+    //     tamLista--;
+    // }
+    // printf("Matrícula Removida, eis a lista atualizada: \n");
+
+
+    if(tamLista == 0){
+        printf("Nenhum registro encontrado");
+    }
+
+
+}
 
 void cadastrarDisciplina(Disciplina* disciplina, int tamLista) {
     
-    
-    
     return;
 }
-
-
-
