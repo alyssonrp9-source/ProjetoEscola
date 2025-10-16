@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_PESSOAS 100
 #define MAX_DISCIPLINAS 50
@@ -175,7 +176,7 @@ int main(){
             // Módulo Disciplinas
             case 3:{
                 // Aqui voce pode adicionar a logica para listar Disciplinas
-                printf("Módulo Disciplinas:\n");
+                printf("Módulo Disciplinas - Digite o número do processo:\n");
                 menuProcesso("Disciplinas");
                 scanf("%d", &opcaoProcesso);
                 
@@ -187,6 +188,7 @@ int main(){
                             break;
                         }
                         cadastrarDisciplina(&disciplina[qtdDisciplinas]);
+                        qtdDisciplinas++;
                         break;
                     }
                     
@@ -342,22 +344,17 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
     }
 }
 
-
-
-
-
 // Colocar funcao excluir
 
 void cadastrarDisciplina(Disciplina* disciplina) {
-
-    printf("Digite o nome da disciplina");
+    printf("Digite o nome da disciplina:\n");
     scanf("%s", disciplina->nome);
-    printf("Digite o código da disciplina");
+    printf("Digite o código da disciplina:\n");
     scanf("%i", &disciplina->codigo);
-    printf("Digite o semestre da disciplina");
+    printf("Digite o semestre da disciplina:\n");
     scanf("%i", &disciplina->semestre);
-    printf("Digite o professor da disciplina");
-    scanf("%i", &disciplina->professor);    
+    printf("Digite a matrícula do professor da disciplina:\n");
+    scanf("%i", &disciplina->professor);
     
     
     return;
@@ -369,11 +366,18 @@ void listarDisciplinas(Disciplina disciplina[], int tam){
         printf("Sem disciplinas cadastradas\n");
         return;
     } 
+    
+    char buffer[11];
+    for (int i = 0; i < 10; i++) {
+        buffer[i] = '-';
+    }
+    buffer[10] = 0;
+    
+    printf("%sDISCIPLINAS:%s\n", buffer, buffer);
 
-    for (int i = 0; i < tam; i++){
-        printf(""); // TODO
+    for (int i = 0; i < tam; i++) {
+        printf("Nome: %s | Matricula Professor (mudar depois): %i | Semestre: %i\n", disciplina[i].nome, disciplina[i].professor, disciplina[i].semestre);
     }
 
     return;
 }
-
