@@ -34,10 +34,11 @@ typedef struct {
 void menu();
 void menuProcesso();
 void menuAtualizar();
+void menuListar();
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo);
 void listar(Pessoa *pessoa, int tamLista ,TipoPessoa tipo);
 void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
-void excluir(Pessoa *pessoa , int tamLista, TipoPessoa tipo);
+void excluir(Pessoa *pessoa , int *tamLista, TipoPessoa tipo);
 void cadastrarDisciplina();
 void listarDisciplinas();
 
@@ -95,24 +96,24 @@ int main(){
                         
                         // Listar Alunos
                         case 2:{
-                            printf("---Listar Alunos---\n");
-                            listar(pessoa,qtdPessoas,ALUNO);
+                            printf("---Listar Aluno---\n");
+                            listar(pessoa,qtdPessoas, ALUNO);
                             
                             break;
                         }
 
-                        // Atualizar Aluno
+                        // Atualizar Professor
                         case 3:{
-                            printf("---Atualizar Cadastro de Alunos---\n");
-
+                            printf("---Atualizar Cadastro de Aluno---\n");
+                            Atualizar(pessoa, qtdPessoas, ALUNO);
                             break;
                         }
                         
-                        // Excluir Aluno
+                        // Excluir Professor
                         case 4:{
-                            printf("---Excluir Cadastro de Alunos---\n");
-
-                            break;        
+                            printf("---Excluir Cadastro de Aluno---\n");
+                            excluir(pessoa, &qtdPessoas, ALUNO);
+                            break; 
                         }
 
                     }
@@ -163,7 +164,7 @@ int main(){
                         // Excluir Professor
                         case 4:{
                             printf("---Excluir Cadastro de Professor---\n");
-                            excluir(pessoa, qtdPessoas, PROFESSOR);
+                            excluir(pessoa, &qtdPessoas, PROFESSOR);
                             break; 
                         }
 
@@ -186,6 +187,9 @@ int main(){
                         
                         break;   
                     }
+                    case 2:{
+                        
+                    }
                     
                     
                 }
@@ -194,8 +198,9 @@ int main(){
                 
                 break;
             }    
-            default:
+            default:{ 
                 printf("Opcao invalida. Tente novamente.\n");
+            }
         }
     }
 }
@@ -213,7 +218,7 @@ void removerQuebraLinha(char *str) {
 }
 
 void menu(){
-    
+    printf("\n");
     printf("----Menu:----\n");
     printf("0. Sair\n");
     printf("1. Aluno\n");
@@ -239,6 +244,15 @@ void menuAtualizar(){
     printf("5 - CPF\n");
 }
 
+void menuListar(){
+    printf("Digite o tópico a se atualizar: \n");
+    printf("1 - Listar Todos\n");
+    printf("2 - Listar por Nome\n");
+    printf("3 - Listar por Data de Nascimento\n");
+    printf("4 - Listar por Sexo\n");
+    printf("Digite a opcão de listagem: ");
+}
+
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
     printf("Digite a matricula: ");
     scanf("%d", &pessoa->matricula);
@@ -254,10 +268,56 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
 }
 
 void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
+    int opcaolistar;
     for(int i = 0; i < tamLista; i++){
         if(pessoa[i].status == tipo){
-            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
-            printf("| Matrícula: %d | Nome: %s | idade: %d | Sexo: %s | CPF: %s |\n" , pessoa[i].matricula , pessoa[i].nome, pessoa[i].idade, pessoa[i].sexo, pessoa[i].CPF);
+                       
+            menuListar();
+            scanf("%d" , &opcaolistar);
+            limparBuffer();
+            switch(opcaolistar){
+                case 1:{
+                    printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
+                    printf("| Matrícula: %d | Nome: %s | idade: %d | Sexo: %s | CPF: %s |\n" , pessoa[i].matricula , pessoa[i].nome, pessoa[i].idade, pessoa[i].sexo, pessoa[i].CPF);
+                    break;
+                }
+                case 2:{
+                    //Listar por Nome
+                   
+                }
+                case 3:{
+                    // Listar por Data de nascimento
+                }
+                case 4:{
+                    char sexo1;
+                    printf("Defina o Sexo das pessoas que quer listar: ");
+                    scanf("%c", &sexo1);
+                    limparBuffer();
+
+                    for (int i = 0; i < tamLista; i++) {
+                        if (pessoa[i].status == tipo) {
+                            if ((strcmp(pessoa[i].sexo, "M") == 0 || strcmp(pessoa[i].sexo, "m") == 0) &&
+                                (sexo1 == 'M' || sexo1 == 'm')) {
+
+                                printf("| %-9d | %-24s | %-5d | %-4s | %-12s |\n",
+                                    pessoa[i].matricula, pessoa[i].nome, pessoa[i].idade,
+                                    pessoa[i].sexo, pessoa[i].CPF);
+                            
+
+                            } 
+                            else if ((strcmp(pessoa[i].sexo, "F") == 0 || strcmp(pessoa[i].sexo, "f") == 0) &&
+                                    (sexo1 == 'F' || sexo1 == 'f')) {
+
+                                printf("| %-9d | %-24s | %-5d | %-4s | %-12s |\n",
+                                    pessoa[i].matricula, pessoa[i].nome, pessoa[i].idade,
+                                    pessoa[i].sexo, pessoa[i].CPF);
+                                
+                            }
+                        }
+                    }
+                }
+            }
+            
         }
     }
     if(tamLista == 0) printf("Nenhum registro encontrado\n");
@@ -285,12 +345,14 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
                     limparBuffer(); // limpa o '\n' deixado no buffer pelo scanf
                     break;
                 }
+
                 case 2:{
                     printf("Digite o novo nome: ");
                     fgets(pessoa[i].nome, sizeof(pessoa[i].nome), stdin);
                     removerQuebraLinha(pessoa[i].nome);
                     break;
                 }
+
                 case 3:{
                     printf("Digite a nova idade: ");
                     scanf("%d" , &pessoa[i].idade);
@@ -311,10 +373,12 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
                     removerQuebraLinha(pessoa[i].nome);
                     break;
                 }
+
                 default:{
                     printf("Opção inválida.\n");
                     break;
                 }
+
             }
             printf("Atualização Realizada com Sucesso");
         }
@@ -324,42 +388,27 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
     }
 }
 
-// Colocar funcao excluir
-
-void excluir(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
+void excluir(Pessoa *pessoa , int *tamLista, TipoPessoa tipo){
     int mat_remover;
 
-    // printf("Digite a Matrícula que deseja remover: ");
-    // scanf("%d" , &mat_remover);
+    printf("Digite a Matrícula que deseja remover: ");
+    scanf("%d" , &mat_remover);
     
-    // for(int i = 0; i < tamLista; i++){
-    //     if(pessoa[i] == ){ 
-    //         if(pessoa[i].status == tipo ){
-    //             for(int j = ; j < tamLista - 1; j++){
-    //                 pessoa[i] = pessoa[i + 1];
-    //             }
-    //         }
-    //     }    
-    // }
-
-
-    // for(int i = 0; i < tamLista - 1; i++){
-    //     if(pessoa[i].status == tipo && pessoa[i].matricula == mat_remover){
-    //         if(mat_remover)
-            
-            
-    //         //pessoa[i] = pessoa[i+1];
-            
-    //     }
-    //     tamLista--;
-    // }
-    // printf("Matrícula Removida, eis a lista atualizada: \n");
-
-
-    if(tamLista == 0){
-        printf("Nenhum registro encontrado");
+    for(int i = 0; i < *tamLista; i++){
+        if(pessoa[i].matricula == mat_remover && pessoa[i].status == tipo){     
+            for(int j = i; j < *tamLista - 1; j++){
+                pessoa[j] = pessoa[j + 1];
+            }
+            (*tamLista)--; //Diminui o total de registros                break;    
+            printf("Matrícula da pessoa %d foi excluída com sucesso", mat_remover);
+            break;
+        }
+        else{
+            printf("Matrícula não encontrada");
+        }    
     }
-
+    
+    
 
 }
 
