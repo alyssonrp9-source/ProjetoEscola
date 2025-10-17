@@ -15,9 +15,9 @@ typedef enum{
 typedef struct {
     int matricula; // ID (Matricula é unica)
     char nome[50];
-    int idade;
+    char dataNascimento[15];
     char sexo[50];
-    char CPF[11]; // Também é único (mas não vou usar para ser ID) 
+    char CPF[11]; // Também é único (mas não vou usar para ser ID)
     TipoPessoa status;
 }Pessoa;
 
@@ -36,7 +36,7 @@ void menuProcesso();
 void menuAtualizar();
 void menuListar();
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo);
-void listar(Pessoa *pessoa, int tamLista ,TipoPessoa tipo);
+void listar(Pessoa *pessoa, int *tamLista ,TipoPessoa tipo);
 void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
 void excluir(Pessoa *pessoa , int *tamLista, TipoPessoa tipo);
 void cadastrarDisciplina();
@@ -97,7 +97,7 @@ int main(){
                         // Listar Alunos
                         case 2:{
                             printf("---Listar Aluno---\n");
-                            listar(pessoa,qtdPessoas, ALUNO);
+                            listar(pessoa,&qtdPessoas, ALUNO);
                             
                             break;
                         }
@@ -149,7 +149,7 @@ int main(){
                         // Listar Professor
                         case 2:{
                             printf("---Listar Professor---\n");
-                            listar(pessoa,qtdPessoas, PROFESSOR);
+                            listar(pessoa,&qtdPessoas, PROFESSOR);
                             
                             break;
                         }
@@ -239,7 +239,7 @@ void menuAtualizar(){
     printf("Digite o tópico a se atualizar: \n");
     printf("1 - Matrícula\n");
     printf("2 - Nome\n");
-    printf("3 - Idade\n");
+    printf("3 - Data de Nascimento\n");
     printf("4 - Sexo\n");
     printf("5 - CPF\n");
 }
@@ -253,74 +253,142 @@ void menuListar(){
     printf("Digite a opcão de listagem: ");
 }
 
-void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
-    printf("Digite a matricula: ");
+void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo) {
+    limparBuffer(); // para evitar ler '\n' anterior
+
+    printf("Digite a matrícula: ");
     scanf("%d", &pessoa->matricula);
+    limparBuffer();
+
     printf("Digite o nome: ");
-    scanf("%s", pessoa->nome);
-    printf("Digite a idade: ");
-    scanf("%d", &pessoa->idade);
-    printf("Digite o sexo: ");
-    scanf("%s", pessoa->sexo);
+    fgets(pessoa->nome, sizeof(pessoa->nome), stdin);
+    removerQuebraLinha(pessoa->nome);
+
+    printf("Digite a data de nascimento (dd/mm/aaaa): ");
+    fgets(pessoa->dataNascimento, sizeof(pessoa->dataNascimento), stdin);
+    removerQuebraLinha(pessoa->dataNascimento);
+
+    printf("Digite o sexo (M/F): ");
+    fgets(pessoa->sexo, sizeof(pessoa->sexo), stdin);
+    removerQuebraLinha(pessoa->sexo);
+
     printf("Digite o CPF: ");
-    scanf("%s", pessoa->CPF);
+    fgets(pessoa->CPF, sizeof(pessoa->CPF), stdin);
+    removerQuebraLinha(pessoa->CPF);
+
     pessoa->status = tipo;
 }
 
-void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
+
+void listar(Pessoa* pessoa, int *tamLista, TipoPessoa tipo){
     int opcaolistar;
-    for(int i = 0; i < tamLista; i++){
-        if(pessoa[i].status == tipo){
+    menuListar();
+    scanf("%d" , &opcaolistar);
+    limparBuffer();
+
+    if (tamLista == 0) {
+        printf("Nenhum registro encontrado\n");
+        return;
+    }
+
+    
                        
-            menuListar();
-            scanf("%d" , &opcaolistar);
-            limparBuffer();
-            switch(opcaolistar){
-                case 1:{
-                    printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
-                    printf("| Matrícula: %d | Nome: %s | idade: %d | Sexo: %s | CPF: %s |\n" , pessoa[i].matricula , pessoa[i].nome, pessoa[i].idade, pessoa[i].sexo, pessoa[i].CPF);
-                    break;
-                }
-                case 2:{
-                    //Listar por Nome
-                   
-                }
-                case 3:{
-                    // Listar por Data de nascimento
-                }
-                case 4:{
-                    char sexo1;
-                    printf("Defina o Sexo das pessoas que quer listar: ");
-                    scanf("%c", &sexo1);
-                    limparBuffer();
-
-                    for (int i = 0; i < tamLista; i++) {
-                        if (pessoa[i].status == tipo) {
-                            if ((strcmp(pessoa[i].sexo, "M") == 0 || strcmp(pessoa[i].sexo, "m") == 0) &&
-                                (sexo1 == 'M' || sexo1 == 'm')) {
-
-                                printf("| %-9d | %-24s | %-5d | %-4s | %-12s |\n",
-                                    pessoa[i].matricula, pessoa[i].nome, pessoa[i].idade,
-                                    pessoa[i].sexo, pessoa[i].CPF);
-                            
-
-                            } 
-                            else if ((strcmp(pessoa[i].sexo, "F") == 0 || strcmp(pessoa[i].sexo, "f") == 0) &&
-                                    (sexo1 == 'F' || sexo1 == 'f')) {
-
-                                printf("| %-9d | %-24s | %-5d | %-4s | %-12s |\n",
-                                    pessoa[i].matricula, pessoa[i].nome, pessoa[i].idade,
-                                    pessoa[i].sexo, pessoa[i].CPF);
-                                
-                            }
-                        }
-                    }
+    switch(opcaolistar){
+        case 1:{
+            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
+            for (int i = 0; i < *tamLista; i++) {
+                if (pessoa[i].status == tipo) {
+                    printf("| Matrícula: %d | Nome: %s | Data de Nascimento: %s | Sexo: %s | CPF: %s |\n",
+                           pessoa[i].matricula, pessoa[i].nome, pessoa[i].dataNascimento,
+                           pessoa[i].sexo, pessoa[i].CPF);
                 }
             }
-            
+            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
+            break;
         }
-    }
-    if(tamLista == 0) printf("Nenhum registro encontrado\n");
+        case 2:{
+            //Listar por Nome
+            char nomeBusca[50];
+            int encontrou = 0;
+
+            printf("Digite o nome (ou parte dele) que deseja buscar: ");
+            scanf("%[^\n]", nomeBusca);
+            limparBuffer();
+
+            printf("\nResultados da busca por \"%s\":\n", nomeBusca);
+            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+            for (int i = 0; i < *tamLista; i++) {
+                if (pessoa[i].status == tipo && strstr(pessoa[i].nome, nomeBusca) != NULL) {
+                    printf("| Matrícula: %d | Nome: %s | Data de Nascimento: %s | Sexo: %s | CPF: %s |\n",
+                           pessoa[i].matricula, pessoa[i].nome, pessoa[i].dataNascimento,
+                           pessoa[i].sexo, pessoa[i].CPF);
+                    encontrou = 1;
+                }
+            }
+
+            if (!encontrou)
+                printf("Nenhum registro encontrado com o nome \"%s\".\n", nomeBusca);
+
+            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
+            break;
+        }
+        
+        case 3: { // Listar por data de nascimento
+            char dataBusca[15];
+            int encontrou = 0;
+
+            printf("Digite a data de nascimento (no formato dd/mm/aaaa): ");
+            scanf("%[^\n]", dataBusca);
+            limparBuffer();
+
+            printf("\nResultados para data de nascimento \"%s\":\n", dataBusca);
+            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+            for (int i = 0; i < *tamLista; i++) {
+                if (pessoa[i].status == tipo && strcmp(pessoa[i].dataNascimento, dataBusca) == 0) {
+                    printf("| Matrícula: %d | Nome: %s | Data de Nascimento: %s | Sexo: %s | CPF: %s |\n",
+                    pessoa[i].matricula, pessoa[i].nome, pessoa[i].dataNascimento,
+                    pessoa[i].sexo, pessoa[i].CPF);
+                    encontrou = 1;
+                }
+            }
+
+            if (!encontrou)
+            printf("Nenhum registro encontrado para a data \"%s\".\n", dataBusca);
+
+            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
+            break;
+        }
+        case 4:{
+            char sexo1;
+            printf("Defina o Sexo das pessoas que quer listar: ");
+            scanf("%c", &sexo1);
+            limparBuffer();
+
+            for (int i = 0; i < *tamLista; i++) {
+                if (pessoa[i].status == tipo) {
+                    if ((strcmp(pessoa[i].sexo, "M") == 0 || strcmp(pessoa[i].sexo, "m") == 0) &&
+                        (sexo1 == 'M' || sexo1 == 'm')) {
+
+                        printf("| %-9d | %-24s | %-5d | %-4s | %-12s |\n",
+                        pessoa[i].matricula, pessoa[i].nome, pessoa[i].dataNascimento,
+                        pessoa[i].sexo, pessoa[i].CPF);
+                    } 
+                    else if ((strcmp(pessoa[i].sexo, "F") == 0 || strcmp(pessoa[i].sexo, "f") == 0) &&
+                                            (sexo1 == 'F' || sexo1 == 'f')) {
+                        printf("| %-9d | %-24s | %-5d | %-4s | %-12s |\n",
+                            pessoa[i].matricula, pessoa[i].nome, pessoa[i].dataNascimento,
+                            pessoa[i].sexo, pessoa[i].CPF);
+                    }
+                }
+                
+            }
+        }
+        default:{
+            printf("Opção inválida!\n");
+        }   
+    }    
 }
 
 void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
@@ -353,24 +421,24 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
                     break;
                 }
 
-                case 3:{
-                    printf("Digite a nova idade: ");
-                    scanf("%d" , &pessoa[i].idade);
-                    limparBuffer(); // limpa o '\n' deixado no buffer pelo scanf
+                case 3:{ 
+                    printf("Digite a nova data de nascimento (dd/mm/aaaa): ");
+                    fgets(pessoa[i].dataNascimento, sizeof(pessoa[i].dataNascimento), stdin);
+                    removerQuebraLinha(pessoa[i].dataNascimento);
                     break;
                 }
-
+                
                 case 4:{
                     printf("Digite a novo sexo: ");
-                    fgets(pessoa[i].sexo, sizeof(pessoa[i].nome), stdin);
+                    fgets(pessoa[i].sexo, sizeof(pessoa[i].sexo), stdin);
                     removerQuebraLinha(pessoa[i].sexo);
                     break;
                 }
 
                 case 5:{
                     printf("Digite a nova CPF: ");
-                    fgets(pessoa[i].nome, sizeof(pessoa[i].nome), stdin);
-                    removerQuebraLinha(pessoa[i].nome);
+                    fgets(pessoa[i].nome, sizeof(pessoa[i].CPF), stdin);
+                    removerQuebraLinha(pessoa[i].CPF);
                     break;
                 }
 
