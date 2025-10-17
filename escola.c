@@ -5,6 +5,7 @@
 
 #define MAX_PESSOAS 100
 #define MAX_DISCIPLINAS 50
+#define MAX_ALUNO_POR_DISC 100
 
 // Enum para definir status
 typedef enum{
@@ -28,7 +29,8 @@ typedef struct {
     int codigo; // ID
     int semestre;
     int professor;
-    int listaAluno[100];
+    int listaAluno[MAX_ALUNO_POR_DISC];
+    int qtdAlunosDisciplina;
 }Disciplina;
 
 // Funcoes
@@ -40,7 +42,10 @@ void listar(Pessoa *pessoa, int tamLista ,TipoPessoa tipo);
 void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
 void excluir();
 void cadastrarDisciplina(Disciplina*);
-void listarDisciplinas(Disciplina*, int);
+int listarDisciplinas(Disciplina*, int);
+void atualizarDisciplina(Disciplina*);
+void menuAtualizarDisciplina();
+Disciplina* procurarDisciplinaPorCodigo(Disciplina lista[], int tam, int codDisc);
 
 int main(){
     
@@ -200,6 +205,11 @@ int main(){
                     
                     // Atualiza disciplinas
                     case 3: {
+                        int codDisc;
+                        printf("Digite o código da disciplina que deseja modificar: ");
+                        scanf("%i", &codDisc);
+                        
+                        atualizarDisciplina(procurarDisciplinaPorCodigo(disciplina, qtdDisciplinas, codDisc));
                         break;
                     }
                     
@@ -274,6 +284,8 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo){
 }
 
 void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
+    
+    
     for(int i = 0; i < tamLista; i++){
         if(pessoa[i].status == tipo){
             printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -355,29 +367,87 @@ void cadastrarDisciplina(Disciplina* disciplina) {
     scanf("%i", &disciplina->semestre);
     printf("Digite a matrícula do professor da disciplina:\n");
     scanf("%i", &disciplina->professor);
-    
+    disciplina->qtdAlunosDisciplina = 0;
     
     return;
 }
 
 
-void listarDisciplinas(Disciplina disciplina[], int tam){
+int listarDisciplinas(Disciplina disciplina[], int tam){
     if (!tam) {
         printf("Sem disciplinas cadastradas\n");
-        return;
+        return tam; // Vai retornar 0
     } 
     
-    char buffer[11];
-    for (int i = 0; i < 10; i++) {
+    int qtdTracos = 15;
+    char buffer[qtdTracos + 1];
+    for (int i = 0; i < qtdTracos; i++) {
         buffer[i] = '-';
     }
-    buffer[10] = 0;
+    buffer[qtdTracos] = 0;
     
     printf("%sDISCIPLINAS:%s\n", buffer, buffer);
 
     for (int i = 0; i < tam; i++) {
-        printf("Nome: %s | Matricula Professor (mudar depois): %i | Semestre: %i\n", disciplina[i].nome, disciplina[i].professor, disciplina[i].semestre);
+        printf("[%i] Nome: %s | Matricula Professor (mudar depois): %i | Semestre: %i | Quantidade de alunos: %i\n", (i + 1), disciplina[i].nome, disciplina[i].professor, disciplina[i].semestre, disciplina[i].qtdAlunosDisciplina);
     }
 
+    return tam;
+}
+
+void menuAtualizarDisciplina() {
+    printf("O que deseja modificar?\n[1] Nome\n[2] Semestre\n[3] Professor\n");
+}
+
+
+Disciplina* procurarDisciplinaPorCodigo(Disciplina lista[], int tam, int codDisc) {
+    for (int i = 0; i < tam; i++) {
+        if (lista[i].codigo == codDisc)
+            return &(lista[i]);
+    }
+    return NULL;
+}
+
+
+
+void atualizarDisciplina(Disciplina* discSelec) {
+    int opcao;
+    
+    if (discSelec == NULL) {
+        printf("Disciplina não encontrada!\n");
+        return;
+    }
+        
+    menuAtualizarDisciplina();
+    scanf("%i", &opcao);
+    
+    switch (opcao) {
+        // Nome da disciplina
+        case 1:
+            printf("Digite o novo nome da disciplina:\n");
+            scanf("%s", &discSelec->nome);
+            break;
+            
+        // Semestre
+        case 2:
+            printf("Digite o novo semestre da disciplina:\n");
+            scanf("%i", &discSelec->semestre);
+            break;
+            
+        // Professor
+        case 3:
+            printf("Digite a matrícula do professor da disciplina:\n");
+            scanf("%i", &discSelec->professor);
+            break;
+        default:
+            printf("Opção inválida!\n");
+            return;
+    }
+    printf("Atualizado!");
     return;
 }
+
+// TODO: implementar cadastro alunos em uma disciplina
+
+
+
