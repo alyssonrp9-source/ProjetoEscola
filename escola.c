@@ -19,7 +19,7 @@ typedef struct {
     char nome[50];
     char dataNascimento[15];
     char sexo[50];
-    char CPF[11]; // Também é único (mas não vou usar para ser ID)
+    char CPF[12]; // Também é único (mas não vou usar para ser ID) (deve ter +1 caracter por causa do \0 sentinela)
     TipoPessoa status;
 }Pessoa;
 
@@ -41,18 +41,13 @@ void menuListar();
 void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo);
 void listar(Pessoa *pessoa, int *tamLista ,TipoPessoa tipo);
 void Atualizar(Pessoa *pessoa, int tamLista, TipoPessoa tipo);
-<<<<<<< HEAD
 void excluir(Pessoa *pessoa , int *tamLista, TipoPessoa tipo);
-void cadastrarDisciplina();
-void listarDisciplinas();
-=======
-void excluir();
 void cadastrarDisciplina(Disciplina*);
 int listarDisciplinas(Disciplina*, int);
 void atualizarDisciplina(Disciplina*);
 void menuAtualizarDisciplina();
 Disciplina* procurarDisciplinaPorCodigo(Disciplina lista[], int tam, int codDisc);
->>>>>>> c633dc4781e7c38e734d048ab112a4d04e9dfda3
+void cadastrarAlunoNaDisciplina(Disciplina*, int, Pessoa*, int);
 
 int main(){
     
@@ -204,9 +199,6 @@ int main(){
                         qtdDisciplinas++;
                         break;
                     }
-                    case 2:{
-                        
-                    }
                     
                     // Lista disciplinas
                     case 2: {
@@ -217,10 +209,27 @@ int main(){
                     // Atualiza disciplinas
                     case 3: {
                         int codDisc;
+                        int escolha;
                         printf("Digite o código da disciplina que deseja modificar: ");
                         scanf("%i", &codDisc);
                         
-                        atualizarDisciplina(procurarDisciplinaPorCodigo(disciplina, qtdDisciplinas, codDisc));
+                        printf("O que gostaria de fazer?\n");
+                        printf("[1] Cadastrar aluno na disciplina\n[2] Modificar propriedades da disciplina\n");
+                        scanf("%i", &escolha);
+                        
+                        switch (escolha) {
+                            case 1:
+                                {
+                                int matriculaAluno;
+                                printf("Digite a matricula do aluno:\n");
+                                scanf("%i", &matriculaAluno);
+                                cadastrarAlunoNaDisciplina(disciplina, matriculaAluno, pessoa, qtdPessoas);
+                                }
+                                break;
+                            case 2:
+                                atualizarDisciplina(procurarDisciplinaPorCodigo(disciplina, qtdDisciplinas, codDisc));
+                                break;
+                        }
                         break;
                     }
                     
@@ -316,8 +325,6 @@ void cadastrarPessoa(Pessoa *pessoa, TipoPessoa tipo) {
     pessoa->status = tipo;
 }
 
-<<<<<<< HEAD
-
 void listar(Pessoa* pessoa, int *tamLista, TipoPessoa tipo){
     int opcaolistar;
     menuListar();
@@ -327,20 +334,8 @@ void listar(Pessoa* pessoa, int *tamLista, TipoPessoa tipo){
     if (tamLista == 0) {
         printf("Nenhum registro encontrado\n");
         return;
-=======
-void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
-    
-    
-    for(int i = 0; i < tamLista; i++){
-        if(pessoa[i].status == tipo){
-            printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
-            printf("| Matrícula: %d | Nome: %s | idade: %d | Sexo: %s | CPF: %s |\n" , pessoa[i].matricula , pessoa[i].nome, pessoa[i].idade, pessoa[i].sexo, pessoa[i].CPF);
-        }
->>>>>>> c633dc4781e7c38e734d048ab112a4d04e9dfda3
     }
-
     
-                       
     switch(opcaolistar){
         case 1:{
             printf("--------------------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -413,12 +408,10 @@ void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
             printf("Defina o Sexo das pessoas que quer listar: ");
             scanf("%c", &sexo1);
             limparBuffer();
-
             for (int i = 0; i < *tamLista; i++) {
                 if (pessoa[i].status == tipo) {
                     if ((strcmp(pessoa[i].sexo, "M") == 0 || strcmp(pessoa[i].sexo, "m") == 0) &&
                         (sexo1 == 'M' || sexo1 == 'm')) {
-
                         printf("| %-9d | %-24s | %-5d | %-4s | %-12s |\n",
                         pessoa[i].matricula, pessoa[i].nome, pessoa[i].dataNascimento,
                         pessoa[i].sexo, pessoa[i].CPF);
@@ -430,8 +423,8 @@ void listar(Pessoa* pessoa, int tamLista, TipoPessoa tipo){
                             pessoa[i].sexo, pessoa[i].CPF);
                     }
                 }
-                
             }
+            break;
         }
         default:{
             printf("Opção inválida!\n");
@@ -504,7 +497,6 @@ void Atualizar(Pessoa *pessoa , int tamLista, TipoPessoa tipo){
     }
 }
 
-<<<<<<< HEAD
 void excluir(Pessoa *pessoa , int *tamLista, TipoPessoa tipo){
     int mat_remover;
 
@@ -524,17 +516,7 @@ void excluir(Pessoa *pessoa , int *tamLista, TipoPessoa tipo){
             printf("Matrícula não encontrada");
         }    
     }
-    
-    
-
 }
-
-void cadastrarDisciplina(Disciplina* disciplina, int tamLista) {
-    
-    return;
-}
-=======
-// Colocar funcao excluir
 
 void cadastrarDisciplina(Disciplina* disciplina) {
     printf("Digite o nome da disciplina:\n");
@@ -625,8 +607,33 @@ void atualizarDisciplina(Disciplina* discSelec) {
     return;
 }
 
-// TODO: implementar cadastro alunos em uma disciplina
+void cadastrarAlunoNaDisciplina(Disciplina* disciplina, int matriculaAluno, Pessoa* pessoas, int qtdPessoas) {
+    for (int i = 0; i < disciplina->qtdAlunosDisciplina; i++) {
+        if (disciplina->listaAluno[i] == matriculaAluno) {
+            printf("Aluno já está cadastrado nesta disciplina!\n");
+            return;
+        }
+    }
 
+    if (disciplina->qtdAlunosDisciplina >= MAX_ALUNO_POR_DISC) {
+        printf("Limite máximo de alunos alcançado nesta disciplina!\n");
+        return;
+    }
 
+    int alunoExiste = 0;
+    for (int i = 0; i < qtdPessoas; i++) {
+        if (pessoas[i].matricula == matriculaAluno && pessoas[i].status == ALUNO) {
+            alunoExiste = 1;
+            break;
+        }
+    }
 
->>>>>>> c633dc4781e7c38e734d048ab112a4d04e9dfda3
+    if (!alunoExiste) {
+        printf("Aluno não encontrado!\n");
+        return;
+    }
+
+    disciplina->listaAluno[disciplina->qtdAlunosDisciplina] = matriculaAluno;
+    disciplina->qtdAlunosDisciplina++;
+    printf("Aluno matriculado com sucesso na disciplina!\n");
+}
