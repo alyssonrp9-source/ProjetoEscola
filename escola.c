@@ -637,3 +637,4 @@ void cadastrarAlunoNaDisciplina(Disciplina* disciplina, int matriculaAluno, Pess
     disciplina->qtdAlunosDisciplina++;
     printf("Aluno matriculado com sucesso na disciplina!\n");
 }
+// TESTE
