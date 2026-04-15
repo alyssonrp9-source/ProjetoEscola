@@ -54,7 +54,6 @@ void listarDisciplina(Disciplina disciplina[], int qtd_disciplinas);
 void atualizarDisciplina(Disciplina pessoa[], int qtd_disciplinas);
 void deletarDisciplina(Disciplina pessoa[], int qtd_disciplinas);
 //Funções para Matrícula
-// Matrículas
 Matricula cadastrarMatricula(Matricula m, Pessoa alunos[], int qtd_alunos, Disciplina disciplinas[], int qtd_disciplinas);
 void listarMatriculasPorAluno(Matricula matriculas[], int qtd_matriculas, int matriculaAluno);
 void listarAlunosPorDisciplina(Matricula matriculas[], int qtd_matriculas, Pessoa alunos[], int qtd_alunos, int codigoDisciplina);
