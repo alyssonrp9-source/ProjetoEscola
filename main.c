@@ -44,7 +44,7 @@ void menuListarDisciplina();
 void limparBuffer();
 void menuProfessor();
 // Funções de Cadastro de Pessoas
-Pessoa cadastrar(Pessoa pessoa, TipoPessoa tipo);
+Pessoa cadastrar(TipoPessoa tipo);
 void listar(Pessoa pessoa[], TipoPessoa tipo, int qtd_pessoas);
 void atualizar(Pessoa pessoa[], TipoPessoa tipo, int qtd_pessoas);
 void deletar(Pessoa pessoa[], TipoPessoa tipo, int qtd_pessoas);
@@ -94,8 +94,15 @@ int main(){
                 switch(opcaoAluno){
                     // Cadastro
                     case 1:{
-                        vetorPessoa[qtd_pessoas] = cadastrar(vetorPessoa[qtd_pessoas], ALUNO);
-                        qtd_pessoas++;
+                        Pessoa p = cadastrar(ALUNO);
+                        if (p.matricula != -1){
+                            vetorPessoa[qtd_pessoas] = p;
+                            qtd_pessoas++;
+                        }else{
+                            printf("Erro no cadastro\n");
+                        }
+                       
+                        
                         break;
                     }
                             
@@ -135,9 +142,13 @@ int main(){
                 switch(opcaoProfessor){
                     // Cadastro
                     case 1:{
-                        vetorPessoa[qtd_pessoas] = cadastrar(vetorPessoa[qtd_pessoas], PROFESSOR);
-                        qtd_pessoas++;
-                        break;
+                        Pessoa p = cadastrar(PROFESSOR);
+                        if (p.matricula != -1){
+                            vetorPessoa[qtd_pessoas] = p;
+                            qtd_pessoas++;
+                        }else{
+                            printf("Erro no cadastro\n");
+                        }
                     }
                             
                     // Listar
@@ -315,14 +326,23 @@ void removerQuebraLinha(char *str) {
         str[len - 1] = '\0';
 }
 
-Pessoa cadastrar(Pessoa pessoa, TipoPessoa tipo){
-    
+Pessoa cadastrar(TipoPessoa tipo){
+    Pessoa pessoa;
+    pessoa.matricula == -1;
     if(tipo == ALUNO){
 
         pessoa.status = ALUNO;
 
         printf("Digite a matrícula: ");
-        scanf("%d" , &pessoa.matricula);
+        int mat;
+        scanf("%d" , &mat);
+        if (mat > 0){
+            pessoa.matricula = mat;
+        }else {
+            printf("Matricula invalida\n");
+            return pessoa;
+        }
+
         limparBuffer();
         
         printf("Digite o nome do Aluno: ");
@@ -343,15 +363,22 @@ Pessoa cadastrar(Pessoa pessoa, TipoPessoa tipo){
         
         printf("Cadastro realizado!\n");
         
-        
     }
     
     else if(tipo == PROFESSOR){
 
         pessoa.status = PROFESSOR;
-
+        
         printf("Digite a matrícula: ");
-        scanf("%d" , &pessoa.matricula);
+        int mat;
+        scanf("%d" , &mat);
+        if (mat > 0){
+            pessoa.matricula = mat;
+        }else {
+            printf("Matricula invalida");
+            return pessoa;
+        }
+        
         limparBuffer();
             
         printf("Digite o nome do Professor: ");
@@ -545,7 +572,7 @@ void atualizar(Pessoa pessoa[], TipoPessoa tipo, int qtd_pessoas){
 
                 case 4:{
                     printf("Digite a novo Sexo: ");
-                    scanf(" %c", pessoa[i].sexo);
+                    scanf(" %c", &pessoa[i].sexo);
                     limparBuffer();
                         
                     break;
@@ -597,19 +624,33 @@ void deletar(Pessoa pessoa[] ,TipoPessoa tipo, int qtd_pessoas){
 
 Disciplina cadastrarDisciplina(Disciplina disciplina){
     
-    printf("Digite o código da disciplina: \n");
-    scanf("%d" , &disciplina.codigo);
+    printf("Digite o código da disciplina: ");
+    int codigo1;
+    scanf("%d" , &codigo1);
+    if (codigo1 > 0){
+        disciplina.codigo = codigo1;
+    }else {
+        printf("Disciplina Inválida\n");
+        return disciplina;
+    }
     limparBuffer();
 
-    printf("Digite o titulo da disciplina: \n");
+    printf("Digite o titulo da disciplina: ");
     fgets(disciplina.titulo, sizeof(disciplina.titulo) , stdin);
     disciplina.titulo[strcspn(disciplina.titulo, "\n")] = '\0';
-    
-    printf("Digite o semestre da Disciplina: \n");
-    scanf("%d" , &disciplina.semestre);
+
+    printf("Digite o semestre da disciplina: ");
+    int semestre1;
+    scanf("%d" , &semestre1);
+    if (semestre1 > 0){
+        disciplina.semestre = semestre1;
+    }else {
+        printf("Semestre Inválido\n");
+        return disciplina;
+    }
     limparBuffer();
 
-    printf("Digite o nome do professor da Disciplina: \n");
+    printf("Digite o nome do professor da Disciplina: ");
     fgets(disciplina.nomeProfessor, sizeof(disciplina.nomeProfessor), stdin);
     disciplina.nomeProfessor[strcspn(disciplina.nomeProfessor, "\n")] = '\0';
     
@@ -672,7 +713,10 @@ void atualizarDisciplina(Disciplina disciplina[], int qtd_disciplinas){
                     
                 }
             }
-        }        
+        } 
+        else{
+            printf("Não existem pessoas cadastradas");
+        }       
     }
 }    
 
@@ -690,46 +734,46 @@ void listarDisciplina(Disciplina disciplina[], int qtd_disciplinas){
         scanf("%d" , &opcao);
         limparBuffer();
         
-            switch(opcao){
-                case 1:{
-                    for(int i = 0; i < qtd_disciplinas; i++){
-                        printf("-------------------------------------------------------------------\n");
-                        printf("| %d | %s | %d | %s |\n" , disciplina[i].codigo , disciplina[i].titulo , disciplina[i].semestre, disciplina[i].nomeProfessor);
+        switch(opcao){
+            case 1:{
+                for(int i = 0; i < qtd_disciplinas; i++){
+                    printf("-------------------------------------------------------------------\n");
+                    printf("| %d | %s | %d | %s |\n" , disciplina[i].codigo , disciplina[i].titulo , disciplina[i].semestre, disciplina[i].nomeProfessor);
                     
-                    }
-                    break;
                 }
-                case 2:{
-                    for(int i = 0; i < qtd_disciplinas; i++){
-                        printf("-------------------------------------------------------------------\n");
-                        printf("%s\n" , disciplina[i].titulo);
-                    }
-                    break;
-                }
-                case 3:{
-                    for(int i = 0; i < qtd_disciplinas; i++){
-                        printf("-------------------------------------------------------------------\n");
-                        printf("%d\n" , disciplina[i].semestre);
-                    }
-                    break;
-                }
-                case 4:{
-                    for(int i = 0; i < qtd_disciplinas; i++){
-                        printf("-------------------------------------------------------------------\n");
-                        printf("%s\n" , disciplina[i].nomeProfessor);
-                    }
-                    break;
-                }
-                case 0:{
-                    printf("Operação Finalizada!\n");
-                    sair = 1;
-                    break;
-                }
-                default:{ 
-                    printf("Opção Inválida, tente novamente ou Pressione 0 para anular a operação\n");
-                    break;
-                }
+                break;
             }
+            case 2:{
+                for(int i = 0; i < qtd_disciplinas; i++){
+                    printf("-------------------------------------------------------------------\n");
+                    printf("%s\n" , disciplina[i].titulo);
+                }
+                break;
+            }
+            case 3:{
+                for(int i = 0; i < qtd_disciplinas; i++){
+                    printf("-------------------------------------------------------------------\n");
+                    printf("%d\n" , disciplina[i].semestre);
+                }
+                break;
+            }
+            case 4:{
+                for(int i = 0; i < qtd_disciplinas; i++){
+                    printf("-------------------------------------------------------------------\n");
+                    printf("%s\n" , disciplina[i].nomeProfessor);
+                }
+                break;
+            }
+            case 0:{
+                printf("Operação Finalizada!\n");
+                sair = 1;
+                break;
+            }
+            default:{ 
+                printf("Opção Inválida, tente novamente ou Pressione 0 para anular a operação\n");
+                break;
+            }
+        }
         
     }
 
